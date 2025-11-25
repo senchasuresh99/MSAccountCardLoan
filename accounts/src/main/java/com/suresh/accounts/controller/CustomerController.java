@@ -1,5 +1,6 @@
 package com.suresh.accounts.controller;
 
+import com.suresh.accounts.accountcustomerresponsedto.AccountCardLoanResponse;
 import com.suresh.accounts.accountcustomerresponsedto.AccountCustomerResponse;
 import com.suresh.accounts.service.CustomerService;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class CustomerController {
     }
 
     @PostMapping("/facthcustomerdetils")
-    public ResponseEntity<AccountCustomerResponse> fetchCustomerDetails(@RequestParam String mobileNumber) {
+    public ResponseEntity<AccountCardLoanResponse> fetchCustomerDetails(@RequestParam String mobileNumber) {
         log.info("Fetching customer details for mobile number: {}", mobileNumber);
         return new ResponseEntity<>(customerService.fetchCustomerDetails(mobileNumber), HttpStatus.OK);
     }

@@ -1,8 +1,9 @@
 package com.suresh.accounts.service;
 
-import com.suresh.accounts.accountcustomerresponsedto.AccountCustomerResponse;
+import com.suresh.accounts.accountcustomerresponsedto.AccountCardLoanResponse;
+import org.jetbrains.annotations.NotNull;
 
 public interface CustomerService {
 
-    AccountCustomerResponse fetchCustomerDetails(String mobileNumber);
+    @NotNull AccountCardLoanResponse fetchCustomerDetails(String mobileNumber);
 }
