@@ -58,8 +58,7 @@ public class CustomerServiceImpl implements CustomerService{
         Accounts accounts = accountRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(() -> new RuntimeException("Account Not Found for Customer ID " + customer.getCustomerId()));
         log.info("Accounts found: {}", accounts);
         CardResponse cardResponse = cardsFeignClient.getCards(mobileNumber).getBody();
-        assert cardResponse != null;
-        if(cardResponse.getMobileNumber() == null) {
+        if(cardResponse ==null || cardResponse.getMobileNumber() == null) {
             cardResponse = new CardResponse();
             cardsFallBack.getCards(mobileNumber).getBody();
             cardResponse.setStatus("Cards Service is down. Please try after sometime");
@@ -69,8 +68,7 @@ public class CustomerServiceImpl implements CustomerService{
         }
         log.info("CardResponse received: {}", cardResponse);
         LoansResponse loansResponse = loansFeignClient.getLoans(mobileNumber).getBody();
-        assert loansResponse != null;
-        if(loansResponse.getMobileNumber() == null) {
+        if(loansResponse == null || loansResponse.getMobileNumber() == null) {
             loansResponse = new LoansResponse();
             loansFallBack.getLoans(mobileNumber).getBody();
             loansResponse.setStatus("Loans service is currently unavailable. Please try again later.");
