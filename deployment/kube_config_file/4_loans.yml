@@ -14,14 +14,14 @@ spec:
     spec:
       containers:
       - name: loans
-        image: javaexpress/loans:2.0.0
+        image: sureshsencha/loans:2.0.0
         ports:
         - containerPort: 9005
         env:
         - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
           value: http://zipkin-service:9411/api/v2/spans
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eurekaserver-service:9002/eureka/
+          value: http://Eureka-Server-service:9002/eureka/
         - name: SPRING_CONFIG_IMPORT
         - name: SPRING_APPLICATION_NAME
           value: loans

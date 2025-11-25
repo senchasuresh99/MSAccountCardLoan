@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eurekaserver-deployment
+  name: Eureka-Server-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: eurekaserver
+      app: Eureka-Server
   template:
     metadata:
       labels:
-        app: eurekaserver
+        app: Eureka-Server
     spec:
       containers:
-      - name: eurekaserver
-        image: javaexpress/eurekaserver:2.0.0
+      - name: Eureka-Server
+        image: sureshsencha/Eureka-Server:2.0.0
         ports:
         - containerPort: 9002
         env:
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-          value: http://eurekaserver-service:9002/eureka/
+          value: http://Eureka-Server-service:9002/eureka/
         - name: SPRING_APPLICATION_NAME
-          value: eurekaserver
+          value: Eureka-Server
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: eurekaserver-service
+  name: Eureka-Server-service
 spec:
   selector:
-    app: eurekaserver
+    app: Eureka-Server
   type: LoadBalancer
   ports:
     - protocol: TCP
