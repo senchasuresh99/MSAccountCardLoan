@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: cards
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:cards
+    username: cards
+    password: 12345
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 9004
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}]'
+  info:
+    env:
+      enabled: true
+info:
+  app:
+    version: 0.0.1
+    description: Cards Microservice
+  contact:
+    name: Suresh Sencha
+    phone: +91 8080808080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9002/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true

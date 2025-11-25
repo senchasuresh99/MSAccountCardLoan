@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: Euraka-Service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9002/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    prefer-ip-address: true
+server:
+  port: 9002
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
+info:
+  app:
+    version: 0.0.1
+    description: Eureka Service
+  contact:
+    name: Suresh Sencha
+    phone: +91 8080808080
