@@ -1,0 +1,129 @@
+version: '3.8'
+services:
+
+  prometheus:
+    image: 'prom/prometheus:latest'
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - sureshsencha-network
+      
+  grafana:
+    image: 'grafana/grafana:latest'
+    restart : on-failure
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    networks:
+      - sureshsencha-network
+    depends_on:
+      - prometheus
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - sureshsencha-network
+
+  eurekaserver:
+    image: 'sureshsencha/Euraka-Service:2.0.0'
+    restart : on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+    ports:
+      - "9002:9002"
+    networks:
+      - sureshsencha-network
+    environment:
+      SPRING_APPLICATION_NAME: "Euraka-Service"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://Euraka-Service:9002/eureka/
+
+  accounts:
+    image: 'sureshsencha/accounts:2.0.0'
+    restart : on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+    ports:
+      - "9003:9003"
+    networks:
+      - sureshsencha-network
+    depends_on:
+      - Euraka-Service
+      - zipkin
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://Euraka-Service:9002/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  cards:
+    image: 'sureshsencha/cards:2.0.0'
+    restart : on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+    ports:
+      - "9004:9004"
+    networks:
+      - sureshsencha-network
+    depends_on:
+      - Euraka-Service
+      - zipkin
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://Euraka-Service:9002/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  loans:
+    image: 'sureshsencha/loans:2.0.0'
+    restart : on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+    ports:
+      - "9005:9005"
+    networks:
+      - sureshsencha-network
+    depends_on:
+      - Euraka-Service
+      - zipkin
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://Euraka-Service:9002/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  gatewayserver:
+    image: "sureshsencha/gatewayserver:2.0.0"
+    restart : on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+    ports:
+      - "9001:9001"
+    networks:
+      - sureshsencha-network
+    depends_on:
+      - Euraka-Service
+      - cards
+      - loans
+      - accounts
+      - zipkin
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://Euraka-Service:9002/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+networks:
+  sureshsencha-network:

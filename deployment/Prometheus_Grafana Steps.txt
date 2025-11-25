@@ -1,0 +1,52 @@
+### Development Steps for Prometheus
+
+1. **Add Dependencies to Your Spring Boot Application**:
+   ```xml
+   <dependency>
+       <groupId>io.micrometer</groupId>
+       <artifactId>micrometer-registry-prometheus</artifactId>
+       <scope>runtime</scope>
+   </dependency>
+   ```
+
+2. **Access the Prometheus API**:
+   Open your browser and go to: `http://localhost:9003/actuator/prometheus`
+
+3. **Prepare a Docker Compose File**:
+   Set up your Docker Compose configuration for all your microservices.
+
+4. **Open Prometheus in Your Browser**:
+   Visit: `http://localhost:9090/targets` to see the status of your microservices.
+
+5. **Access the Grafana Dashboard**:
+   Navigate to: `http://localhost:3000`
+   - Username: `admin`
+   - Password: (your password)
+
+6. **Creating a Data Source in Grafana**:
+   - Add your first data source.
+   - Select **Prometheus** as the type.
+   - Name it: `Prometheus`
+   - Enter the Prometheus server URL: `http://prometheus:9090`
+   - Click **Save & Test** to confirm the connection.
+
+7. **Importing a Dashboard**:
+   - On the left-hand side, click **Dashboard**.
+   - Choose **Import Dashboard** to find and import dashboards for common applications from grafana.com/dashboards.
+     - Example Dashboards:
+       - [APM Dashboard](https://grafana.com/grafana/dashboards/12900)
+       - [Dashboard 2](https://grafana.com/grafana/dashboards/11378)
+       - [Dashboard 3](https://grafana.com/grafana/dashboards/4701)
+   - Click **Load**, select the Prometheus data source, and then click **Import**. Finally, save the dashboard.
+
+8. **Creating a Custom Dashboard**:
+   - Click on **New Dashboard**.
+   - Add a visualization.
+   - Select the data source.
+   - On the right-hand side, set the panel name to `Microservice Status`.
+   - Use the **Metrics Browser** at the bottom to find `up`.
+   - Run your queries, choose a graph type, and then save and apply your settings.
+
+--- 
+
+Feel free to ask if you need more adjustments!
