@@ -6,12 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cards
+      app: cardspod
   template:
     metadata:
-      name: cardspod      
       labels:
-        app: cards
+        app: cardspod
     spec:
       containers:
       - name: cards
@@ -32,7 +31,7 @@ metadata:
   name: cards-service
 spec:
   selector:
-    app: cards
+    app: cardspod
   type: LoadBalancer
   ports:
     - protocol: TCP

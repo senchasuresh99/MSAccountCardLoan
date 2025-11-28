@@ -4,12 +4,15 @@ import com.suresh.accounts.accountcustomerresponsedto.AccountCustomerResponse;
 import com.suresh.accounts.dto.AccountsDto;
 import com.suresh.accounts.entities.Accounts;
 import com.suresh.accounts.entities.Customer;
+import com.suresh.accounts.events.AccountCreatedEvent;
 import com.suresh.accounts.repository.AccountRepository;
 import com.suresh.accounts.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,13 +26,15 @@ public class AccountServiceImpl implements AccountService{
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
     private final CustomerServiceImpl customerServiceImpl;
+    private KafkaTemplate<String, AccountCreatedEvent> kafkaTemplate;
 
     private static final String MOBILE_NUMBER_NOT_FOUND = "Mobile Number Not Found ";
 
-    public AccountServiceImpl(AccountRepository accountRepository, CustomerRepository customerRepository, CustomerServiceImpl customerServiceImpl) {
+    public AccountServiceImpl(AccountRepository accountRepository, CustomerRepository customerRepository, CustomerServiceImpl customerServiceImpl, KafkaTemplate<String, AccountCreatedEvent> kafkaTemplate) {
         this.accountRepository = accountRepository;
         this.customerRepository = customerRepository;
         this.customerServiceImpl = customerServiceImpl;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Override
@@ -40,6 +45,8 @@ public class AccountServiceImpl implements AccountService{
         }
         Customer customer = customerServiceImpl.getCustomer(accountCustomerResponse);
         Accounts accounts = createAccount(customer);
+        kafkaTemplate.send("AccountCreatedTopic",
+                new AccountCreatedEvent(accounts.getAccountNumber(), customer.getCustomerId(), customer.getMobileNumber()));
         accounts = accountRepository.save(accounts);
         log.info("Account created with account number: {}", accounts.getAccountNumber());
         AccountCustomerResponse customerResponse = new AccountCustomerResponse();
@@ -130,7 +137,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
 
-    private Accounts createAccount(Customer customer){
+    private @NotNull Accounts createAccount(@NotNull Customer customer){
         Accounts accounts = new Accounts();
         accounts.setAccountType("SAVING");
         accounts.setBranchAdders("HYD");

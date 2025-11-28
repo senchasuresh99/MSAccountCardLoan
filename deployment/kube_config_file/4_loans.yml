@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: loans
+      app: loanspod
   template:
     metadata:
       labels:
-        app: loans
+        app: loanspod
     spec:
       containers:
       - name: loans
@@ -32,7 +32,7 @@ metadata:
   name: loans-service
 spec:
   selector:
-    app: loans
+    app: loanspod
   type: LoadBalancer
   ports:
     - protocol: TCP
