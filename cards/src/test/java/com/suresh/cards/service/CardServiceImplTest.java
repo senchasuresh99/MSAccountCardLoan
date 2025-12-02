@@ -70,10 +70,6 @@ class CardServiceImplTest {
         Mockito.when(cardRepository.save(Mockito.any(Cards.class))).thenReturn(cards);
         var data = cardServiceImpl.updateCard(response);
         assertEquals(response.getMobileNumber(), data.getMobileNumber());
-
-        /*Mockito.when(cardRepository.save(Mockito.any(Cards.class))).thenReturn(cards);
-        var data = cardServiceImpl.updateCard(response);
-        assertEquals(response.getMobileNumber(), data.getMobileNumber());*/
     }
 
     @Test
@@ -216,9 +212,7 @@ class CardServiceImplTest {
         try {
             cardServiceImpl.updateCard(response);
         } catch (RuntimeException e) {
-            assertThrows(RuntimeException.class, () -> {
-                throw new RuntimeException("Cards Not Found for Mobile Number " + response.getMobileNumber());
-            });
+            assertEquals("Card Not Found for Mobile Number " + response.getMobileNumber(), e.getMessage());
         }
     }
 
@@ -300,30 +294,4 @@ class CardServiceImplTest {
         var data = cardServiceImpl.createCard(response);
         assertEquals(response.getMobileNumber(), data.getMobileNumber());
     }
-
-    /*@Test
-    void updateCard_InvalidMobileNumber_ThrowsException() {
-        CardResponse response = new CardResponse();
-        response.setMobileNumber("12345"); // Invalid mobile number
-        try {
-            cardServiceImpl.updateCard(response);
-        } catch (IllegalArgumentException e) {
-            assertThrows(RuntimeException.class, () -> {
-                throw new RuntimeException("Card Not Found for Mobile Number " + response.getMobileNumber());
-            });
-        }
-    }*/
-
-    /*@Test
-    void getCards_InvalidMobileNumber_ThrowsException() {
-        String mobileNumber = "12345"; // Invalid mobile number
-        try {
-
-            cardServiceImpl.getCards(mobileNumber);
-        } catch (IllegalArgumentException e) {
-            assertThrows(IllegalArgumentException.class, () -> {
-                throw new IllegalArgumentException("Mobile number must be exactly 10 digits");
-            });
-        }
-    }*/
 }
