@@ -43,24 +43,21 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardResponse getCards(String mobileNumber) {
-        if(mobileNumber != null){
+        if(mobileNumber != null) {
             Cards cards = cardRepository.findByMobileNumber(mobileNumber).orElseThrow(() -> new RuntimeException("Cards Not Found for Mobile Number " + mobileNumber));
-            if(cards != null){
-                CardResponse cardResponse = new CardResponse();
-                BeanUtils.copyProperties(cards, cardResponse);
-                return cardResponse;
-            }
-        }else {
+            CardResponse cardResponse = new CardResponse();
+            BeanUtils.copyProperties(cards, cardResponse);
+            return cardResponse;
+        } else {
             log.error(PROVIDED_MOBILE_NUMBER_IS_NULL);
             throw new IllegalArgumentException(PROVIDED_MOBILE_NUMBER_IS_NULL);
         }
-        return null;
     }
 
     @Override
     public CardResponse updateCard(CardResponse cardResponse) {
         if (cardResponse == null) {
-            log.error("Provided cardResponse is null");
+            log.debug("Provided cardResponse is null");
             throw new IllegalArgumentException("Provided cardResponse is null");
         }
         if (cardResponse.getMobileNumber() == null) {
